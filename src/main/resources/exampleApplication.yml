@@ -1,0 +1,7 @@
+logging:
+  level:
+    org.springframework.web: TRACE
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://<user>:<password>@<host>/<database>?retryWrites=true&w=majority
