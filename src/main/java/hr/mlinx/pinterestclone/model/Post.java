@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post")
+@Table(name = "posts")
 public class Post {
 
     @Id
