@@ -59,14 +59,12 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    @Override
-    public Set<Post> getLikedPostsOfUser(User user) {
+    private Set<Post> getLikedPostsOfUser(User user) {
         Hibernate.initialize(user.getLikedPosts());
         return user.getLikedPosts();
     }
 
-    @Override
-    public Set<User> getUserLikesOfPost(Post post) {
+    private Set<User> getUserLikesOfPost(Post post) {
         Hibernate.initialize(post.getLikedByUsers());
         return post.getLikedByUsers();
     }

@@ -5,6 +5,7 @@ import hr.mlinx.pinterestclone.exception.ResourceNotFoundException;
 import hr.mlinx.pinterestclone.model.Role;
 import hr.mlinx.pinterestclone.model.RoleName;
 import hr.mlinx.pinterestclone.model.User;
+import hr.mlinx.pinterestclone.repository.PostRepository;
 import hr.mlinx.pinterestclone.repository.RoleRepository;
 import hr.mlinx.pinterestclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
 
     @Override
     public List<User> getUsers() {
@@ -57,8 +58,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long userId) {
-        postService.getPostsByUserId(userId)
-                .forEach(post -> postService.deletePostById(post.getId()));
+        postRepository.findAllByUser(getUserById(userId))
+                .forEach(post -> postRepository.deleteById(post.getId()));
 
         userRepository.deleteById(userId);
     }
@@ -83,6 +84,21 @@ public class UserServiceImpl implements UserService {
         modifyRole(name, userId, RoleAction.TAKE);
     }
 
+    private void modifyRole(RoleName name, Long userId, RoleAction roleAction) {
+        User user = getUserById(userId);
+        Role role = getRoleByName(name);
+        Set<Role> roles = getRolesOfUser(user);
+
+        if (roleAction == RoleAction.GIVE) {
+            roles.add(role);
+        } else if (roleAction == RoleAction.TAKE) {
+            roles.remove(role);
+        }
+
+        user.setRoles(roles);
+        saveUser(user);
+    }
+
     @Override
     public User changeUsername(Long userId, String username) {
         if (userRepository.existsByUsername(username)) {
@@ -105,21 +121,6 @@ public class UserServiceImpl implements UserService {
     public User changePassword(User user, String password) {
         user.setPassword(password);
         return saveUser(user);
-    }
-
-    private void modifyRole(RoleName name, Long userId, RoleAction roleAction) {
-        User user = getUserById(userId);
-        Role role = getRoleByName(name);
-        Set<Role> roles = getRolesOfUser(user);
-
-        if (roleAction == RoleAction.GIVE) {
-            roles.add(role);
-        } else if (roleAction == RoleAction.TAKE) {
-            roles.remove(role);
-        }
-
-        user.setRoles(roles);
-        saveUser(user);
     }
 
     @Override
