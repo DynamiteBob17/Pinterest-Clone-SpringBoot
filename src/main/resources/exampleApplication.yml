@@ -1,7 +1,38 @@
 logging:
   level:
-    org.springframework.web: TRACE
+    org.springframework:
+      web: TRACE
+      security: TRACE
+server:
+  error:
+    include-stacktrace: never
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://<user>:<password>@<host>/<database>?retryWrites=true&w=majority
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://<host>:<port>/<database>
+    username:
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id:
+            client-secret:
+            scope: read:user, user:email
+          google:
+            client-id:
+            client-secret:
+            scope: profile, email
+
+app:
+  auth:
+    tokenSecret:
+    tokenExpirationDays: 3
+  oauth2:
+    redirectUri: http://localhost:5173/oauth2/redirect
+  cors:
+    allowedOrigins: http://localhost:5173
