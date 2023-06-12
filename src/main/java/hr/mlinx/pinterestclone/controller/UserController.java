@@ -47,8 +47,11 @@ public class UserController {
         return ResponseEntity.ok(userService.changeImageUrl(currentUser.getId(), changeImageUrlRequest.getImageUrl()));
     }
 
+    // the jwt generated before changing the password could still be valid, so that's sort of a problem,
+    // maybe store the tokens in a table and then for every token not only validate the token itself but also check if
+    // it's stored so that we can remove it from the database when changing passwords, maybe logging out, etc.
     @PatchMapping("/changePassword")
-    public ResponseEntity<User> changePassword(@AuthenticationPrincipal CustomUserDetails currentUser, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<GenericApiResponse> changePassword(@AuthenticationPrincipal CustomUserDetails currentUser, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("User {} requested password change", currentUser.getId());
 
         User user = userService.getUserById(currentUser.getId());
@@ -58,7 +61,9 @@ public class UserController {
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), changePasswordRequest.getOldPassword()));
-        return ResponseEntity.ok(userService.changePassword(user, passwordEncoder.encode(changePasswordRequest.getNewPassword())));
+        userService.changePassword(user, passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+
+        return ResponseEntity.ok(new GenericApiResponse("Successfully changed password"));
     }
 
     @DeleteMapping("/account")
@@ -68,7 +73,7 @@ public class UserController {
         return ResponseEntity.ok(new GenericApiResponse("Successfully deleted user " + currentUser.getId()));
     }
 
-    @PostMapping("/post")
+    @PostMapping("/createPost")
     public ResponseEntity<Post> createPost(@Valid @RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal CustomUserDetails currentUser) {
         log.info("User {} requested to create a post ('{}')", currentUser.getId(), postRequest.getDescription());
 
@@ -79,14 +84,14 @@ public class UserController {
         return ResponseEntity.ok(postService.createPostByUserId(post, currentUser.getId()));
     }
 
-    @PatchMapping("/likePost/{postId}")
+    @PutMapping("/likePost/{postId}")
     public ResponseEntity<GenericApiResponse> likePost(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable Long postId) {
         log.info("User {} requested to like post {}", currentUser.getId(), postId);
         postService.likePost(postId, currentUser.getId());
         return ResponseEntity.ok(new GenericApiResponse("Successfully liked post " + postId));
     }
 
-    @PatchMapping("/unlikePost/{postId}")
+    @PutMapping("/unlikePost/{postId}")
     public ResponseEntity<GenericApiResponse> unlikePost(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable Long postId) {
         log.info("User {} requested to unlike post {}", currentUser.getId(), postId);
         postService.unlikePost(postId, currentUser.getId());

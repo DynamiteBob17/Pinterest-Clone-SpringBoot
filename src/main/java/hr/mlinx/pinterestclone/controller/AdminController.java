@@ -25,14 +25,14 @@ public class AdminController {
         return userService.getUsers();
     }
 
-    @PatchMapping("/giveMod/{userId}")
+    @PutMapping("/giveMod/{userId}")
     public ResponseEntity<GenericApiResponse> giveMod(@PathVariable Long userId) {
         log.info("Admin request to give moderator role to user {}", userId);
         userService.giveRoleByUserId(RoleName.ROLE_MODERATOR, userId);
         return ResponseEntity.ok(new GenericApiResponse("Successfully gave moderator role to user " + userId));
     }
 
-    @PatchMapping("/takeMod/{userId}")
+    @PutMapping("/takeMod/{userId}")
     public ResponseEntity<GenericApiResponse> takeMod(@PathVariable Long userId) {
         log.info("Admin request to take moderator role from user {}", userId);
         userService.takeRoleByUserId(RoleName.ROLE_MODERATOR, userId);
