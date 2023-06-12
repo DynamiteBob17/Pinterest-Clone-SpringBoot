@@ -2,6 +2,7 @@ package hr.mlinx.pinterestclone.service;
 
 import hr.mlinx.pinterestclone.exception.BadRequestException;
 import hr.mlinx.pinterestclone.exception.ResourceNotFoundException;
+import hr.mlinx.pinterestclone.model.Post;
 import hr.mlinx.pinterestclone.model.Role;
 import hr.mlinx.pinterestclone.model.RoleName;
 import hr.mlinx.pinterestclone.model.User;
@@ -32,6 +33,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user", "userId", userId));
+    }
+
+    @Override
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -58,10 +65,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long userId) {
-        postRepository.findAllByUser(getUserById(userId))
-                .forEach(post -> postRepository.deleteById(post.getId()));
-
-        userRepository.deleteById(userId);
+        User user = getUserById(userId);
+        postRepository.deleteAll(postRepository.findAllByCreator(user));
+        userRepository.delete(user);
     }
 
     @Override
@@ -90,13 +96,24 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = getRolesOfUser(user);
 
         if (roleAction == RoleAction.GIVE) {
+            if (roles.contains(role)) {
+                throw new BadRequestException("User " + userId + " already has role " + name.name());
+            }
             roles.add(role);
         } else if (roleAction == RoleAction.TAKE) {
+            if (!roles.contains(role)) {
+                throw new BadRequestException("User " + userId + " does not have role " + name.name());
+            }
             roles.remove(role);
         }
 
         user.setRoles(roles);
         saveUser(user);
+    }
+
+    private Role getRoleByName(RoleName name) {
+        return roleRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("role", "name", name.name()));
     }
 
     @Override
@@ -118,20 +135,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User changePassword(User user, String password) {
+    public void changePassword(User user, String password) {
         user.setPassword(password);
-        return saveUser(user);
-    }
-
-    @Override
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("user", "user_id", userId));
-    }
-
-    private Role getRoleByName(RoleName name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("role", "name", name.name()));
+        saveUser(user);
     }
 
 }

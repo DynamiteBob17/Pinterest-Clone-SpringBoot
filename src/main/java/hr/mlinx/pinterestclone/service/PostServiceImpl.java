@@ -29,7 +29,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPostsByUserId(Long userId) {
-        return postRepository.findAllByUser(userService.getUserById(userId));
+        return postRepository.findAllByCreator(userService.getUserById(userId));
+    }
+
+    @Override
+    public Post getPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("post", "postId", postId));
     }
 
     @Override
@@ -39,34 +45,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPostByUserId(Post post, Long userId) {
-        post.setUser(userService.getUserById(userId));
+        User user = userService.getUserById(userId);
+        post.setCreator(user);
         return savePost(post);
     }
 
     @Override
     public void deletePostById(Long postId) {
-        postRepository.deleteById(postId);
+        Post post = getPostById(postId);
+        postRepository.delete(post);
     }
 
     @Override
     public void deleteYourPostById(Long postId, Long userId) {
         Post post = getPostById(postId);
 
-        if (!Objects.equals(post.getUser().getId(), userId)) {
-            throw new BadRequestException("You are not allowed to delete post by id " + postId);
+        if (!Objects.equals(post.getCreator().getId(), userId)) {
+            throw new BadRequestException("You cannot delete post " + postId);
         }
 
         postRepository.delete(post);
-    }
-
-    private Set<Post> getLikedPostsOfUser(User user) {
-        Hibernate.initialize(user.getLikedPosts());
-        return user.getLikedPosts();
-    }
-
-    private Set<User> getUserLikesOfPost(Post post) {
-        Hibernate.initialize(post.getLikedByUsers());
-        return post.getLikedByUsers();
     }
 
     private enum PostAction {
@@ -86,24 +84,27 @@ public class PostServiceImpl implements PostService {
     private void modifyPostLikes(Long userId, Long postId, PostAction postAction) {
         User user = userService.getUserById(userId);
         Post post = getPostById(postId);
-        Set<Post> likedPosts = getLikedPostsOfUser(user);
-        Set<User> likedByUsers = getUserLikesOfPost(post);
+        Set<User> likedByUsers = getLikedByUsers(post);
 
         if (postAction == PostAction.LIKE) {
-            likedPosts.add(post);
+            if (likedByUsers.contains(user)) {
+                throw new BadRequestException("You already liked post " + postId);
+            }
             likedByUsers.add(user);
         } else if (postAction == PostAction.UNLIKE) {
-            likedPosts.remove(post);
+            if (!likedByUsers.contains(user)) {
+                throw new BadRequestException("You have not liked post " + postId);
+            }
             likedByUsers.remove(user);
         }
 
-        userService.saveUser(user);
+
         savePost(post);
     }
 
-    private Post getPostById(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("post", "post_id", postId));
+    private Set<User> getLikedByUsers(Post post) {
+        Hibernate.initialize(post.getLikedByUsers());
+        return post.getLikedByUsers();
     }
 
 }

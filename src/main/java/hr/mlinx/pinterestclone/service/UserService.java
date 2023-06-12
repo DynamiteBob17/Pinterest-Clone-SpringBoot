@@ -11,6 +11,7 @@ import java.util.Set;
 public interface UserService {
 
     List<User> getUsers();
+    User getUserById(Long userId);
     Optional<User> getUserByUsername(String username);
     Optional<User> getUserByEmail(String email);
     boolean existsUserWithUsername(String username);
@@ -18,11 +19,10 @@ public interface UserService {
     User saveUser(User user);
     void deleteUserById(Long userId);
     Set<Role> getRolesOfUser(User user);
-    User getUserById(Long userId);
     void giveRoleByUserId(RoleName name, Long userId);
     void takeRoleByUserId(RoleName name, Long userId);
     User changeUsername(Long userId, String username);
     User changeImageUrl(Long userId, String imageUrl);
-    User changePassword(User user, String password);
+    void changePassword(User user, String password);
 
 }
