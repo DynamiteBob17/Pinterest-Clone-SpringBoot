@@ -2,6 +2,7 @@ package hr.mlinx.pinterestclone.config;
 
 import hr.mlinx.pinterestclone.model.RoleName;
 import hr.mlinx.pinterestclone.security.TokenAuthenticationFilter;
+import hr.mlinx.pinterestclone.security.oauth2.CustomAuthenticationFailureHandler;
 import hr.mlinx.pinterestclone.security.oauth2.CustomAuthenticationSuccessHandler;
 import hr.mlinx.pinterestclone.security.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -54,7 +56,8 @@ public class SecurityConfig {
                 .oauth2Login(oauth2Login -> oauth2Login
                         .userInfoEndpoint().userService(customOAuth2UserService)
                         .and()
-                        .successHandler(customAuthenticationSuccessHandler))
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler))
                 .logout(l -> l.logoutSuccessUrl("/").permitAll())
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
