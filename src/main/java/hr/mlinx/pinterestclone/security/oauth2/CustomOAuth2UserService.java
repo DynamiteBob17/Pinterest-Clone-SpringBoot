@@ -59,18 +59,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         String.format("Looks like you're already signed up through %s with the following email: %s!",
                         user.getAuthProvider().name(), customUserDetails.getEmail()));
             }
-
-            updateExistingUser(user, customUserDetails);
         } else {
             user = new User();
             registerNewUser(user, customUserDetails);
         }
 
         return userService.saveUser(user);
-    }
-
-    private void updateExistingUser(User existingUser, CustomUserDetails customUserDetails) {
-        existingUser.setImageUrl(customUserDetails.getImageUrl());
     }
 
     private void registerNewUser(User newUser, CustomUserDetails customUserDetails) {
