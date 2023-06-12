@@ -1,7 +1,7 @@
 package hr.mlinx.pinterestclone.security.oauth2;
 
 import hr.mlinx.pinterestclone.controller.AuthController;
-import hr.mlinx.pinterestclone.exception.BadRequestException;
+import hr.mlinx.pinterestclone.exception.OAuth2AuthenticationProcessingException;
 import hr.mlinx.pinterestclone.model.User;
 import hr.mlinx.pinterestclone.repository.RoleRepository;
 import hr.mlinx.pinterestclone.security.CustomUserDetails;
@@ -55,7 +55,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = userOptional.get();
 
             if (!user.getAuthProvider().name().equalsIgnoreCase(userRequest.getClientRegistration().getRegistrationId())) {
-                throw new BadRequestException(String.format("Looks like you're already signed up through %s with the following email: %s!",
+                throw new OAuth2AuthenticationProcessingException(
+                        String.format("Looks like you're already signed up through %s with the following email: %s!",
                         user.getAuthProvider().name(), customUserDetails.getEmail()));
             }
 
@@ -74,7 +75,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private void registerNewUser(User newUser, CustomUserDetails customUserDetails) {
         if (userService.existsUserWithUsername(customUserDetails.getUsername())) {
-            throw new BadRequestException(String.format("The OAuth2 username %s you're trying to register with already exists in the application.",
+            throw new OAuth2AuthenticationProcessingException(
+                    String.format("The OAuth2 username %s you're trying to register with already exists in the application.",
                     customUserDetails.getUsername()));
         }
 

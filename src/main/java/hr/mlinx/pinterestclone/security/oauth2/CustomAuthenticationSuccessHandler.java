@@ -31,10 +31,16 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = redirectUri.isEmpty()
-                ? determineTargetUrl(request, response, authentication) : redirectUri;
+                ? determineTargetUrl(request, response, authentication)
+                : redirectUri;
 
         String token = tokenProvider.generate(authentication);
-        targetUrl = UriComponentsBuilder.fromUriString(targetUrl).queryParam("token", token).build().toUriString();
+
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("token", token)
+                .build().toUriString();
+
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+
 }
