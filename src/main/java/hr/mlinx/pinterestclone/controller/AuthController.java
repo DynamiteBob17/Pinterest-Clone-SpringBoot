@@ -13,6 +13,7 @@ import hr.mlinx.pinterestclone.payload.SignupRequest;
 import hr.mlinx.pinterestclone.repository.RoleRepository;
 import hr.mlinx.pinterestclone.security.TokenProvider;
 import hr.mlinx.pinterestclone.service.UserService;
+import hr.mlinx.pinterestclone.util.Defaults;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class AuthController {
         user.setUsername(signupRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setEmail(signupRequest.getEmail());
-        user.setImageUrl("https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg");
+        user.setImageUrl(Defaults.IMAGE_URL);
         user.setAuthProvider(AuthProvider.LOCAL);
         giveRoleOfUser(user, roleRepository);
 
