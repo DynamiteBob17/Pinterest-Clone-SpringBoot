@@ -1,8 +1,8 @@
 logging:
   level:
     org.springframework:
-      web: TRACE
-      security: TRACE
+      web: DEBUG
+      security: DEBUG
 server:
   error:
     include-stacktrace: never

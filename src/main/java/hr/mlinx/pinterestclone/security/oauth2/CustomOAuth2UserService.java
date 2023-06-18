@@ -29,7 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        log.info("Processing OAuth2 login request through {}", userRequest.getClientRegistration().getRegistrationId());
+        log.info("Processing OAuth2.0 login request through {}", userRequest.getClientRegistration().getRegistrationId());
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -38,7 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .findFirst();
 
         if (oAuth2UserInfoExtractorOptional.isEmpty()) {
-            throw new InternalAuthenticationServiceException("The OAuth2 provider is not supported yet");
+            throw new InternalAuthenticationServiceException("The OAuth2.0 provider is not supported yet");
         }
 
         CustomUserDetails customUserDetails = oAuth2UserInfoExtractorOptional.get().extractUserInfo(oAuth2User);
@@ -70,7 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private void registerNewUser(User newUser, CustomUserDetails customUserDetails) {
         if (userService.existsUserWithUsername(customUserDetails.getUsername())) {
             throw new OAuth2AuthenticationProcessingException(
-                    String.format("The OAuth2 username %s you're trying to register with already exists in the application.",
+                    String.format("The OAuth2.0 username %s you're trying to register with already exists in the application.",
                     customUserDetails.getUsername()));
         }
 

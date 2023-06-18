@@ -44,9 +44,6 @@ public class TokenProvider {
                 .setIssuer("api")
                 .setAudience("app")
                 .setSubject(user.getUsername())
-                .claim("roles", roles)
-                .claim("username", user.getName())
-                .claim("email", user.getEmail())
                 .compact();
     }
 

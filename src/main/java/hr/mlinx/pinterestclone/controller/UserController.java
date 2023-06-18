@@ -57,7 +57,7 @@ public class UserController {
         User user = userService.getUserById(currentUser.getId());
 
         if (user.getAuthProvider() != AuthProvider.LOCAL) {
-            throw new BadRequestException("Users authenticated through OAuth2 (Social login) cannot authenticate with passwords.");
+            throw new BadRequestException("Users authenticated through OAuth2.0 (Social login) cannot authenticate with passwords.");
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), changePasswordRequest.getOldPassword()));

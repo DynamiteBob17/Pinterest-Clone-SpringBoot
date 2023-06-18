@@ -2,7 +2,6 @@ package hr.mlinx.pinterestclone.service;
 
 import hr.mlinx.pinterestclone.exception.BadRequestException;
 import hr.mlinx.pinterestclone.exception.ResourceNotFoundException;
-import hr.mlinx.pinterestclone.model.Post;
 import hr.mlinx.pinterestclone.model.Role;
 import hr.mlinx.pinterestclone.model.RoleName;
 import hr.mlinx.pinterestclone.model.User;

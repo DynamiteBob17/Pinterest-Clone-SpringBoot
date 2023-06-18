@@ -65,7 +65,7 @@ public class AuthController {
         user.setUsername(signupRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setEmail(signupRequest.getEmail());
-        user.setImageUrl("https://i.kym-cdn.com/entries/icons/original/000/031/015/cover5.jpg");
+        user.setImageUrl("https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg");
         user.setAuthProvider(AuthProvider.LOCAL);
         giveRoleOfUser(user, roleRepository);
 
