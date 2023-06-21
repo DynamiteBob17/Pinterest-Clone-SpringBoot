@@ -7,3 +7,4 @@
 - **or** if you have [Java 17+](https://www.oracle.com/java/technologies/downloads/#java17) run `./mvnw clean spring-boot:run`
 - Should be running on **localhost** on port 8080
 - To run the frontend: `cd frontend` from root directory then `npm install` and `npm run dev` which should then be running on port 5173
+- to make a user an admin, insert his id with the desired role id into into the user_roles table; admins can manage other users' moderator roles
