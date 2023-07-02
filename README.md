@@ -1,5 +1,10 @@
 # About
-- Spring Boot version of [this project](https://github.com/DynamiteBob17/Pinterest-Clone-Server), but has more authentication options and also admin and moderator roles besides the user role
+- users can login/register either through email/username/password or through GitHub/Google
+- a **user** can create posts and like/unlike other posts, change their account information, password, etc.
+- a **moderator** can delete any post of any user as well as do anything a regular user can
+- an **admin** can give/take users moderator roles as well as do anything a moderator/user can
+- *note*: some features of the Spring Boot backend have not yet been implemented on the React frontend
+- [live demo](https://clipchamp.com/watch/R834Jxcb1Lv)
 
 ## How to run
 - create a **application.yml** file according to the **exampleApplication.yml** file in *src/main/resources*
