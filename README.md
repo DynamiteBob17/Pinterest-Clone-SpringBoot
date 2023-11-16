@@ -10,6 +10,7 @@
 ****disclaimer***: the Spring Boot application uses the H2 in-memory database, so most of the data saved on the server will be gone after the application shuts down or restarts
 
 ## How to run
+- Google and GitHub OAuth 2.0 clients need to be set up beforehand: use the client url for the Authorised JavaScript origins field/Homepage URL and use the server url + '/login/oauth2/code/google (or github)' for the Authorised redirect/callback urls
 - create an **application.yml** file according to the **exampleApplication.yml** file in *src/main/resources*
 - See the [official docs](https://docs.spring.io/spring-boot/docs/1.5.16.RELEASE/reference/html/using-boot-running-your-application.html)
 - **or** if you have [Java 17+](https://www.oracle.com/java/technologies/downloads/#java17) run `./mvnw clean spring-boot:run`
