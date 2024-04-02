@@ -4,7 +4,6 @@
 - a **moderator** can delete any post of any user as well as do anything a regular user can
 - an **admin** can give/take users moderator roles as well as do anything a moderator/user can, there is a default ***admin*** user with the password '*admin*' and email '*admin@admin*'
 - *note*: some features of the Spring Boot backend have not yet been implemented on the React frontend
-- [live demo](https://clipchamp.com/watch/R834Jxcb1Lv)
 
 
 ****disclaimer***: the Spring Boot application uses the H2 in-memory database, so most of the data saved on the server will be gone after the application shuts down or restarts
